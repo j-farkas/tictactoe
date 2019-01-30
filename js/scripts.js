@@ -1,7 +1,6 @@
 function Player(letter) {
   this.letter = letter;
   active = false;
-  id = 0;
 }
 
 var player1 = new Player("X");
@@ -24,6 +23,20 @@ const winCombos = [
 [2,4,6]
 ]
 
+function reInit(){
+  player1 = new Player("X");
+  player1.active = true;
+  player2 = new Player("O");
+  for(var i = 0;i<9;i++){
+    gameboard[i]=i;
+    $("."+i).text("");
+    console.log(gameboard);
+  }
+  gameOver = false;
+  $(".col-md-4").removeClass("white");
+  count = 0;
+  $("p").text("");
+}
 function swapActive() {
   if(player1.active === true) {
     player1.active = false;
@@ -55,29 +68,42 @@ function checkWin(id) {
    wins.forEach(function(arr) {
     if(gameboard[arr[0]] === gameboard[arr[1]] && gameboard[arr[0]] === gameboard[arr[2]]) {
       winner = true;
+      for(var i=0; i<=2; i++){
+      $("#" + arr[i]).addClass("white");
+      }
     }
   })
   return winner;
 }
 
 var count = 0;
+var gameOver = false;
 function attachContactListeners() {
   $(".container").on("click", ".col-md-4", function() {
     var len = $("." + $(this).attr("id")).text().length;
-    if(len < 1){
+    if(len < 1 && gameOver === false){
       count++;
       $("." + $(this).attr("id")).text(activePlayer().letter);
       gameboard[$(this).attr("id")] = activePlayer().letter;
-
       if(checkWin($(this).attr("id")) === true){
-        $("p").text(activePlayer().letter + " wins");
+        $("p").text("Player " + activePlayer().letter + " Wins!");
+        gameOver = true;
+        var buttons = $("#buttons");
+        buttons.append("<button class='restartButton'>RESTART GAME</button>");
       }else{
         if(count === 9){
           $("p").text("Nobody wins");
+          gameOver = true;
+          var buttons = $("#buttons");
+          buttons.append("<button class='restartButton'>RESTART GAME</button>");
         }
       }
       swapActive();
     }
+  });
+  $("#buttons").on("click", ".restartButton", function() {
+    $("#buttons").empty();
+    reInit();
   });
 };
 

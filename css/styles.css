@@ -1,8 +1,53 @@
 .col-md-4 {
   border: solid black 2px;
-  height: 70px;
+  height: 170px;
 }
 
 .row{
-  width: 210px;
+  width: 500px;
+}
+
+.container{
+  margin: auto;
+  margin-top: 25%;
+  width: 50%;
+}
+
+.col-md-4{
+  border-top: 0;
+  border-left: 0;
+  line-height: 170px;
+  vertical-align: middle;
+  background-color: green;
+}
+
+.right {
+  border-right: 0;
+}
+
+.white{
+  background-color: white;
+}
+
+.bottom {
+  border-bottom: 0;
+}
+
+body{
+    background-color: yellow;
+}
+
+h1{
+  font-size: 150px;
+}
+
+h2{
+  text-align: center;
+  font-size: 75px;
+}
+
+p{
+  text-align: center;
+  font-size: 40px;
+  margin: 30px;
 }
