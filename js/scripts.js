@@ -54,6 +54,63 @@ function activePlayer (){
     return player2;
 }
 
+function checkAIWin(id) {
+  var wins = winCombos;
+  wins = wins.filter(function(arr) {
+    if(arr.includes(parseInt(id))) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  var winner = -1;
+   wins.forEach(function(arr) {
+     var counter = 0;
+      if(gameboard[arr[0]] === "O") {
+        counter++;
+      }
+      if(gameboard[arr[1]] === "O") {
+        counter++;
+      }
+      if(gameboard[arr[2]] === "O") {
+        counter++;
+      }
+      if(counter === 2){
+        winner = id;
+      }
+    })
+    return winner;
+}
+function checkAIBlock(id) {
+  var wins = winCombos;
+  wins = wins.filter(function(arr) {
+    if(arr.includes(parseInt(id))) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  var winner = -1;
+   wins.forEach(function(arr) {
+     var counter = 0;
+      if(gameboard[arr[0]] === "X") {
+        counter++;
+      }
+      if(gameboard[arr[1]] === "X") {
+        counter++;
+      }
+      if(gameboard[arr[2]] === "X") {
+        counter++;
+      }
+      if(counter === 2){
+        winner = id;
+      }
+    })
+    return winner;
+}
+
 function checkWin(id) {
   var wins = winCombos;
   wins = wins.filter(function(arr) {
@@ -90,23 +147,67 @@ function attachContactListeners() {
         gameOver = true;
         var buttons = $("#buttons");
         buttons.append("<button class='restartButton'>RESTART GAME</button>");
+        $("#buttons").append("<button class='aiButton'>RESTART GAME vs AI</button>");
       }else{
         if(count === 9){
           $("p").text("Nobody wins");
           gameOver = true;
           var buttons = $("#buttons");
           buttons.append("<button class='restartButton'>RESTART GAME</button>");
+          $("#buttons").append("<button class='aiButton'>RESTART GAME vs AI</button>");
         }
       }
       swapActive();
+      var remaining = gameboard.filter(function(arr){
+        return !(isNaN(arr));
+      })
+      console.log(remaining);
+      if(player2.ai === true){
+        var move = -1;
+        if(move === -1){
+            remaining.forEach(function(ar){
+              if(move === -1){
+                move = checkAIWin(ar);
+              }
+            })
+        }
+        if(move === -1){
+            remaining.forEach(function(ar){
+              if(move === -1){
+                move = checkAIBlock(ar);
+              }
+            })
+        }if(move===-1){
+          move = remaining[Math.floor(Math.random()*remaining.length)];
+        }
+        $("." + move).text("O");
+        gameboard[move] = "O";
+        if(checkWin(move)=== true){
+          $("p").text("Player " + activePlayer().letter + " Wins!");
+          gameOver = true;
+          var buttons = $("#buttons");
+          buttons.append("<button class='restartButton'>RESTART GAME</button>");
+          $("#buttons").append("<button class='aiButton'>RESTART GAME vs AI</button>");
+        }else{
+        swapActive();
+        count++;
+        }
+      }
     }
   });
   $("#buttons").on("click", ".restartButton", function() {
     $("#buttons").empty();
     reInit();
+    player2.ai = false;
+  });
+  $("#buttons").on("click", ".aiButton", function() {
+    $("#buttons").empty();
+    reInit();
+    player2.ai = true;
   });
 };
 
 $(document).ready(function() {
   attachContactListeners();
+  $("#buttons").append("<button class='aiButton'>RESTART GAME vs AI</button>");
 })
